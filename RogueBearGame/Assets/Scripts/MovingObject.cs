@@ -18,7 +18,9 @@ public class MovingObject : MonoBehaviour
         Up,
         Down,
         Left,
-        Right
+        Right,
+        Idle
+        
     }
 
 
@@ -50,7 +52,7 @@ public class MovingObject : MonoBehaviour
         return gameObject.transform.position;
     }
 
-    public void MoveObject(GameObject movingObject, Side movingSide)
+    public void MoveObject(GameObject movingObject, Side movingSide, float speed)
     {
         Vector3 startPosition = GetPosition(movingObject);
         Vector3 endPosition = CalculateSideVector(startPosition, movingSide);
@@ -62,7 +64,7 @@ public class MovingObject : MonoBehaviour
 
         if (hit.transform==null && stepFinished)
         {
-            coroutine = MoveFromTo(movingObject, startPosition, endPosition, 5.0f);
+            coroutine = MoveFromTo(movingObject, startPosition, endPosition, speed);
             StartCoroutine(coroutine);
         }
 
@@ -84,6 +86,9 @@ public class MovingObject : MonoBehaviour
             case Side.Right:
                 vector.x += 1;
                 break;
+            default:
+                break;
+                
         }
 
         return vector;
