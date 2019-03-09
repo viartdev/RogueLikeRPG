@@ -8,6 +8,8 @@ public class BoardGenerate : MonoBehaviour
 {
     public GameObject FloorTile;
     public GameObject WallTile;
+    public GameObject Player;
+
     private Transform boardHolder;
 
     public int xSize { get; set; } = 10;
@@ -18,7 +20,47 @@ public class BoardGenerate : MonoBehaviour
     void Start()
     {
         GenerateStaticObjects();
+        
+        int wallCount = Random.Range(1, 10);
+        GenerateRandomObjects(WallTile,wallCount);
+
+        InstantiateObjectByVector(Player,new Vector3(1.0f,1.0f,0.0f));
     }
+
+    private void FillInnerCellsList()
+    {
+        freeCells = new List<Vector3>();
+        freeCells.Clear();
+        for (int x = 2; x < xSize-2; x++)
+        {
+            for (int y = 2; y < ySize-2; y++)
+            {
+                Vector3 freeCell = new Vector3(x,y,0.0f);
+                freeCells.Add(freeCell);
+            }
+        }
+    }
+
+    Vector3 RandomPosition()
+    {
+        Vector3 _position;
+        int index = Random.Range(0, freeCells.Count);
+        _position = freeCells[index];
+        freeCells.RemoveAt(index);
+        return _position;
+    }
+
+    void GenerateRandomObjects(GameObject gameObject, int count)
+    {
+        FillInnerCellsList();
+        for (int i = 0; i < count; i++)
+        {
+            Vector3 position = RandomPosition();
+            InstantiateObjectByVector(gameObject,position);
+        }
+    }
+
+
 
     public void GenerateStaticObjects()
     {
@@ -29,20 +71,25 @@ public class BoardGenerate : MonoBehaviour
             {
                 if (x == 0 || x == xSize-1 || y == 0 || y == ySize-1)
                 {
-                    InstantiateObject(WallTile,x,y);
+                    InstantiateBoardObjects(WallTile,x,y);
                 }
                 else
                 {
-                    InstantiateObject(FloorTile,x,y);
+                    InstantiateBoardObjects(FloorTile,x,y);
                 }
             }
         }
     }
 
-    void InstantiateObject(GameObject gameObject, int x, int y)
+    void InstantiateBoardObjects(GameObject gameObject, int x, int y)
     {
         GameObject instanse = Instantiate(gameObject, new Vector3(x, y, 0.0f), Quaternion.identity);
         instanse.transform.SetParent(boardHolder);
+    }
+
+    void InstantiateObjectByVector(GameObject gameObject,Vector3 position)
+    {
+        Instantiate(gameObject, position, Quaternion.identity);
     }
 
 

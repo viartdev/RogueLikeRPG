@@ -47,3 +47,4 @@ MonoBehaviour:
     type: 3}
   WallTile: {fileID: 2522825461150574005, guid: 3ee76b2860939e14c913066feb9a9e8d,
     type: 3}
+  Player: {fileID: 6463504640984303804, guid: f942fc011d32e034ebe8e25e6eb9121d, type: 3}
