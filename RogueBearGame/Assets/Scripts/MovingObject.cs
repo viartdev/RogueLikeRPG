@@ -6,7 +6,8 @@ public class MovingObject : MonoBehaviour
 {
 
     public LayerMask blockingLayer;
-
+    protected float ObjectSpeed = 3.0f;
+    public float moveTime = 0.1f;
     private bool stepFinished = true;
 
     protected BoxCollider2D boxCollider;
@@ -20,20 +21,16 @@ public class MovingObject : MonoBehaviour
         Left,
         Right,
         Idle
-        
+
     }
 
-
-    void Start()
-    {
-    }
 
     // Update is called once per frame
 
-    IEnumerator MoveFromTo(GameObject objectToMove, Vector3 startPosition, Vector3 endPosition, float speed)
+    IEnumerator MoveFromTo(GameObject objectToMove, Vector3 startPosition, Vector3 endPosition)
     {
         stepFinished = false;
-        float step = (speed / (startPosition - endPosition).magnitude) * Time.fixedDeltaTime;
+        float step = (ObjectSpeed / (startPosition - endPosition).magnitude) * Time.fixedDeltaTime;
         float t = 0;
         while (t <= 1.0f)
         {
@@ -45,6 +42,7 @@ public class MovingObject : MonoBehaviour
         objectToMove.transform.position = endPosition;
         stepFinished = true;
 
+
     }
 
     Vector3 GetPosition(GameObject gameObject)
@@ -52,21 +50,43 @@ public class MovingObject : MonoBehaviour
         return gameObject.transform.position;
     }
 
-    public void MoveObject(GameObject movingObject, Side movingSide, float speed)
+    private void MoveObject(GameObject movingObject, Vector3 startPosition, Vector3 endPosition)
     {
-        Vector3 startPosition = GetPosition(movingObject);
-        Vector3 endPosition = CalculateSideVector(startPosition, movingSide);
+        if (stepFinished)
+        {
+            coroutine = MoveFromTo(movingObject, startPosition, endPosition);
+            StartCoroutine(coroutine);
+        }
 
+    }
+
+    private bool CanMove(Vector3 startPosition, Vector3 endPosition)
+    {
         RaycastHit2D hit;
         boxCollider.enabled = false;
         hit = Physics2D.Linecast(startPosition, endPosition, blockingLayer);
         boxCollider.enabled = true;
+        if (hit.transform == null)
+            return true;
+        else
+            return false;
+    }
 
-        if (hit.transform==null && stepFinished)
+    public bool AttempMove(GameObject movingObject, Side movingSide)
+    {
+        Vector3 startPosition = GetPosition(movingObject);
+        Vector3 endPosition = CalculateSideVector(startPosition, movingSide);
+        bool canMove = CanMove(startPosition, endPosition);
+        if (canMove)
         {
-            coroutine = MoveFromTo(movingObject, startPosition, endPosition, speed);
-            StartCoroutine(coroutine);
+            MoveObject(movingObject, startPosition, endPosition);
+            return true;
         }
+        else
+        {
+            return false;
+        }
+
 
     }
 
@@ -88,7 +108,7 @@ public class MovingObject : MonoBehaviour
                 break;
             default:
                 break;
-                
+
         }
 
         return vector;

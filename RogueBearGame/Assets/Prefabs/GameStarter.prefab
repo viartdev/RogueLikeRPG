@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6434275587769202122}
   - component: {fileID: 6434275587769202123}
+  - component: {fileID: 3113857163374679912}
   m_Layer: 0
   m_Name: GameStarter
   m_TagString: Untagged
@@ -48,3 +49,16 @@ MonoBehaviour:
   WallTile: {fileID: 2522825461150574005, guid: 3ee76b2860939e14c913066feb9a9e8d,
     type: 3}
   Player: {fileID: 6463504640984303804, guid: f942fc011d32e034ebe8e25e6eb9121d, type: 3}
+  Enemy: {fileID: 7707562394977329610, guid: 354763b704d26aa40b841d1da1cf381f, type: 3}
+--- !u!114 &3113857163374679912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6434275587769202120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1081ba7dd4bc108478844759b8f3aaf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -9,7 +9,15 @@ public class Player : MovingObject
     private GameObject player;
     private Animator animator;
 
-    private float playerSpeed = 3.0f;
+    public int id { get; set; }
+
+
+
+    private KeyCode[] EventKeys =
+    {
+        KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow,KeyCode.Space
+    };
+
 
     void Start()
     {
@@ -18,57 +26,61 @@ public class Player : MovingObject
         animator = GetComponent<Animator>();
     }
 
-
+   
     // Update is called once per frame
     void Update()
     {
+        ResetAnimationFlags();
+
         Side direction = Side.Idle;
-        int keyCount = 0;
-        ResetAnimationBools();
 
-        if (Input.anyKey)
+        bool playerEvent = false;
+        KeyCode pressedKey = KeyCode.None;
+        if (MyGameManager._roundEnded)
         {
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (Input.anyKey)
             {
-                direction = Side.Up;
-                keyCount++;
-            }
+                foreach (var key in EventKeys)
+                {
+                    if (Input.GetKey(key))
+                    {
+                        playerEvent = true;
+                        pressedKey = key;
+                        break;
+                    }
+                }
 
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                direction = Side.Down;
-                keyCount++;
-            }
+                if (playerEvent)
+                {
+                    switch (pressedKey)
+                    {
+                        case KeyCode.UpArrow:
+                            direction = Side.Up;
+                            break;
+                        case KeyCode.DownArrow:
+                            direction = Side.Down;
+                            break;
+                        case KeyCode.LeftArrow:
+                            direction = Side.Left;
+                            break;
+                        case KeyCode.RightArrow:
+                            direction = Side.Right;
+                            break;
+                    }
 
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                direction = Side.Left;
-                keyCount++;
-            }
 
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                direction = Side.Right;
-                keyCount++;
-            }
+                    bool isPlayerMoved = AttempMove(player, direction);
+                    if (isPlayerMoved)
+                    {
+                        AnimatePlayer(direction);
+                        MyGameManager._roundEnded = false;
+                    }
 
-            if (Input.GetKey(KeyCode.Space))
-            {
-                keyCount++;
+
+                }
+
             }
         }
-        
-
-        if (keyCount == 1)
-        {
-            
-            MoveObject(player, direction, playerSpeed);
-            AnimatePlayer(direction);
-
-        }
-        
-        
-
     }
 
     void AnimatePlayer(Side movingSide)
@@ -95,12 +107,25 @@ public class Player : MovingObject
         animator.SetBool(direction, true);
     }
 
-    void ResetAnimationBools()
+    private void ResetAnimationFlags()
     {
         animator.SetBool("isMovedUp", false);
         animator.SetBool("isMovedDown", false);
         animator.SetBool("isMovedLeft", false);
         animator.SetBool("isMovedRight", false);
+    }
+
+    private bool isPlayerDoEvent(KeyCode pressedKey)
+    {
+        bool _isPlayerDoEvent = false;
+        foreach (var key in EventKeys)
+        {
+            if (key == pressedKey)
+            {
+                _isPlayerDoEvent = true;
+            }
+        }
+        return _isPlayerDoEvent;
     }
 }
 

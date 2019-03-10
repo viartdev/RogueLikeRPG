@@ -8,7 +8,9 @@ public class BoardGenerate : MonoBehaviour
 {
     public GameObject FloorTile;
     public GameObject WallTile;
-    public GameObject Player;
+    public GameObject Enemy;
+
+
 
     private Transform boardHolder;
 
@@ -16,16 +18,18 @@ public class BoardGenerate : MonoBehaviour
     public int ySize { get; set; } = 10;
 
     private List<Vector3> freeCells;
+    
+   
 
-    void Start()
+    public void SetupScene()
     {
+        FillInnerCellsList();
         GenerateStaticObjects();
-        
         int wallCount = Random.Range(1, 10);
-        GenerateRandomObjects(WallTile,wallCount);
-
-        InstantiateObjectByVector(Player,new Vector3(1.0f,1.0f,0.0f));
+        GenerateRandomObjects(WallTile, wallCount);
+        GenerateRandomObjects(Enemy,2);
     }
+
 
     private void FillInnerCellsList()
     {
@@ -52,11 +56,12 @@ public class BoardGenerate : MonoBehaviour
 
     void GenerateRandomObjects(GameObject gameObject, int count)
     {
-        FillInnerCellsList();
+        
         for (int i = 0; i < count; i++)
         {
             Vector3 position = RandomPosition();
-            InstantiateObjectByVector(gameObject,position);
+
+             InstantiateBoardObjects(gameObject,(int)position.x,(int)position.y);
         }
     }
 
@@ -91,6 +96,12 @@ public class BoardGenerate : MonoBehaviour
     {
         Instantiate(gameObject, position, Quaternion.identity);
     }
+
+    
+
+
+
+    
 
 
     /*
